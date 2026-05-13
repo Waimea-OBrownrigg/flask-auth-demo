@@ -29,6 +29,46 @@ def show_welcome():
 
 
 #-----------------------------------------------------------
+# Sign-up page
+#-----------------------------------------------------------
+@app.get("/user/new")
+def show_signup_form():
+    return render_template("pages/user_form.jinja")
+
+
+#-----------------------------------------------------------
+# Handle Sign-up
+#-----------------------------------------------------------
+@app.post("/user")
+def process_new_user():
+    firstname = request.form.get('firstname', '').strip()
+    surname = request.form.get('surname', '').strip()
+    username = request.form.get('username', '').strip().lower
+    password = request.form.get('password', '').strip
+
+    with connect_db() as db:
+        sql = "SELECT id FROM user WHERE username=?"
+        params = (username,)
+        user = db.execute(sql, params).fetchhome
+
+        if user:
+            flash(f"Username '{username}' already taken", "Error")
+            return redirect("/user/new")
+
+        pass_hash = generate_password_hash(password)
+
+        sql = """
+            INSERT INTO user (firstname, surname, username, pass_hash)
+            VALUES (?, ?, ?, ?)
+        """
+        params = (firstname, surname, username, pass_hash)
+        db.execute(sql, params)
+
+        flash("Account created. Please login.", "Success")
+        return redirect("/login")
+
+
+#-----------------------------------------------------------
 # Creature list page - Show all the creatures
 #-----------------------------------------------------------
 @app.get("/creatures")
