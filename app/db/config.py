@@ -21,7 +21,7 @@ class UserTable:
 
     SCHEMA = """
         CREATE TABLE users (
-            id      INTEGER PRIMARY KEY AUTOINCREMENT,
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
             firstname     TEXT NOT NULL,
             surname       TEXT NOT NULL,
             username      TEXT NOT NULL,
@@ -32,6 +32,20 @@ class UserTable:
     SEED_DATA = """
     """
 
+class MessageTable:
+
+    NAME = "messages"
+
+    SCHEMA = """
+        CREATE TABLE messages (
+            id      INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            title   TEXT NOT NULL,
+            text    TEXT NOT NULL,
+
+            FOREIGN KEY(user_id) REFERENCES user(id)
+        )
+    """
 # Add more table classes here...
 
 

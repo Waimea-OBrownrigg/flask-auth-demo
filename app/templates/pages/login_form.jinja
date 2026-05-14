@@ -1,5 +1,5 @@
 {#=====================================================
-  Sign-up page
+  Login page
 =====================================================#}
 
 {% extends 'pages/base.jinja' %}
@@ -7,17 +7,9 @@
 
 {% block content %}
 
-    <h2>Sign Up</h2>
+    <h2>Log In</h2>
 
-    <form method="post" action="/user">
-      <label>
-        First Name
-        <input type="text" name="firstname" required>
-      </label>
-      <label>
-        Last Name
-        <input type="text" name="lastname" required>
-      </label>
+    <form method="post" action="/Login">
       <label>
         username
         <input type="text" name="username" required>
@@ -26,7 +18,7 @@
         Password
         <input type="password" name="password" required>
       </label>
-      <button>Submit</button>
+      <button>Login</button>
     </form>
 
 {% endblock %}

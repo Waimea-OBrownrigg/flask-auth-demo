@@ -65,8 +65,47 @@ def process_new_user():
         db.execute(sql, params)
 
         flash("Account created. Please login.", "Success")
-        return redirect("/login")
+        return redirect("pages/login_form")
 
+
+#-----------------------------------------------------------
+# Log-in page
+#-----------------------------------------------------------
+@app.get("/user/login")
+def show_login_form():
+    return render_template("pages/login_form.jinja")
+
+
+#-----------------------------------------------------------
+# Handle Log-in
+#-----------------------------------------------------------
+@app.post("/Login")
+def process_user_login():
+    username = request.form.get('username', '').strip().lower
+    password = request.form.get('password', '').strip
+
+    with connect_db() as db:
+        sql = "SELECT id, firstname, surname, pass_hash FROM user WHERE username=?"
+        params = (username,)
+        user = db.execute(sql, params).fetchhome
+
+        if not user:
+            flash(f"Unknown user.", "Error")
+            return redirect("pages/login_form")
+
+        if not check_password_hash(user["pass_hash"], password):
+            flash(f"Incorrect password", "Error")
+            return redirect("pages/login_form")
+
+        session["logged_in"] = True
+        session["user"] = {
+            "username": username,
+            "firstname": user["firstname"],
+            "surname": user["surname"],
+        }
+
+        flash("Login successful", "success")
+        return redirect("/")
 
 #-----------------------------------------------------------
 # Creature list page - Show all the creatures
