@@ -43,29 +43,29 @@ def show_signup_form():
 def process_new_user():
     firstname = request.form.get('firstname', '').strip()
     surname = request.form.get('surname', '').strip()
-    username = request.form.get('username', '').strip().lower
-    password = request.form.get('password', '').strip
+    username = request.form.get('username', '').strip().lower()
+    password = request.form.get('password', '').strip()
 
     with connect_db() as db:
-        sql = "SELECT id FROM user WHERE username=?"
+        sql = "SELECT id FROM users WHERE username=?"
         params = (username,)
-        user = db.execute(sql, params).fetchhome
+        user = db.execute(sql, params).fetchone()
 
         if user:
             flash(f"Username '{username}' already taken", "Error")
-            return redirect("/user/new")
+            return redirect("/users/new")
 
         pass_hash = generate_password_hash(password)
 
         sql = """
-            INSERT INTO user (firstname, surname, username, pass_hash)
+            INSERT INTO users (firstname, surname, username, password_hash)
             VALUES (?, ?, ?, ?)
         """
         params = (firstname, surname, username, pass_hash)
         db.execute(sql, params)
 
         flash("Account created. Please login.", "Success")
-        return redirect("pages/login_form")
+        return redirect("/user/login")
 
 
 #-----------------------------------------------------------
@@ -81,23 +81,23 @@ def show_login_form():
 #-----------------------------------------------------------
 @app.post("/Login")
 def process_user_login():
-    username = request.form.get('username', '').strip().lower
-    password = request.form.get('password', '').strip
+    username = request.form.get('username', '').strip().lower()
+    password = request.form.get('password', '').strip()
 
     with connect_db() as db:
-        sql = "SELECT id, firstname, surname, pass_hash FROM user WHERE username=?"
+        sql = "SELECT id, firstname, surname, password_hash FROM users WHERE username=?"
         params = (username,)
-        user = db.execute(sql, params).fetchhome
+        user = db.execute(sql, params).fetchone()
 
         if not user:
             flash(f"Unknown user.", "Error")
-            return redirect("pages/login_form")
+            return redirect("/user/login")
 
-        if not check_password_hash(user["pass_hash"], password):
+        if not check_password_hash(user["password_hash"], password):
             flash(f"Incorrect password", "Error")
-            return redirect("pages/login_form")
+            return redirect("/user/login")
 
-        session["logged_in"] = True
+        session["loggedIn"] = True
         session["user"] = {
             "username": username,
             "firstname": user["firstname"],
