@@ -46,6 +46,8 @@ class MessageTable:
             FOREIGN KEY(user_id) REFERENCES user(id)
         )
     """
+
+    SEED_DATA = ""
 # Add more table classes here...
 
 
@@ -67,6 +69,7 @@ class MessageTable:
 
 TABLES = [
     UserTable,
+    MessageTable,
     # Add more tables here...
 ]
 

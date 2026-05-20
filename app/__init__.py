@@ -99,6 +99,7 @@ def process_user_login():
 
         session["loggedIn"] = True
         session["user"] = {
+            "id": user["id"],
             "username": username,
             "firstname": user["firstname"],
             "surname": user["surname"],
@@ -106,6 +107,54 @@ def process_user_login():
 
         flash("Login successful", "success")
         return redirect("/")
+
+
+#-----------------------------------------------------------
+# Log-out
+#-----------------------------------------------------------
+@app.get("/logout")
+def user_logout():
+    session.clear()
+    flash(f"You have been logged out.", "success")
+    return redirect("/")
+
+
+#-----------------------------------------------------------
+# Compose message page
+#-----------------------------------------------------------
+@app.get("/message/new")
+def message_create():
+    return render_template("pages/message_form.jinja")
+
+
+#-----------------------------------------------------------
+# Handle new message
+#-----------------------------------------------------------
+@app.post("/message")
+def process_new_message():
+    title = request.form.get('title', '').strip()
+    text = request.form.get('text', '').strip()
+
+    # User bID is in the session
+    user_id = session["user"]["id"]
+
+    with connect_db() as db:
+        sql = """
+            INSERT INTO messages (user_id, title, text)
+            VALUES (?,?,?)
+        """
+        params = (user_id, title, text)
+
+        db.execute(sql,params)
+
+
+#-----------------------------------------------------------
+# View message page
+#-----------------------------------------------------------
+@app.get("/message/show")
+def browse():
+    return render_template("pages/browse.jinja")
+
 
 #-----------------------------------------------------------
 # Creature list page - Show all the creatures

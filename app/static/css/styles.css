@@ -4,21 +4,38 @@
 ===========================================================*/
 
 :root {
-    --text-col:         #244;
-
-    --back-col:         #dff;
-    --back-col-dark:    #bdd;
-
-    --border-col:       #355;
-
+    --base-col:         #355;
     --accent-col:       #e43;
+
+    --base-col-lighter: color-mix(in srgb, var(--base-col), #fff 50%);
+    --base-col-light:   color-mix(in srgb, var(--base-col), #fff 20%);
+    --base-col-dark:    color-mix(in srgb, var(--base-col), #000 20%);
+    --base-col-darker:  color-mix(in srgb, var(--base-col), #000 50%);
+
+    --text-col:         #000;
+    --text-col-inv:     #fff;
+
+    --page-bg:          var(--base-col-lighter);
+
+    --panel-bg:         var(--base-col-light);
+
+    --border-col:       var(--base-col-darker);
+
+    --link-col:         var(--accent-col);
+    --button-bg:        var(--accent-col);
+    
+
+    --padding:          1rem;
+    --padding:          0.5rem;
+
+    --gap:              1rem;
 }
 
 
 /* Overall Layout -----------------------------------------------*/
 
 html {
-    background-color: var(--back-col);
+    background-color: var(--page-bg);
     color: var(--text-col);
 
     font-family: system-ui, sans-serif;
@@ -33,7 +50,7 @@ body {
 main {
     max-width: 60rem;
     margin-inline: auto;
-    padding: 1rem;
+    padding: var(--padding);
 }
 
 
@@ -57,10 +74,10 @@ body > header {
 
     nav {
         display: flex;
-        gap: 1rem;
+        gap: var(--gap);
 
         a {
-            color: var(--accent-col);
+            color: var(--link-col);
         }
     }
 }
