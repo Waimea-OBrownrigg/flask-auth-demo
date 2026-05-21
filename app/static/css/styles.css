@@ -101,7 +101,7 @@ main > h2 {
 
 /* Creature List --------------------------------------------------*/
 
-#creatures {
+#messages-list {
     display: grid;
     gap: 2rem;
     grid-template-columns: 1fr;
@@ -114,7 +114,7 @@ main > h2 {
         grid-template-columns: 1fr 1fr 1fr;
     }
 
-    .creature {
+    .message-item {
         padding: 1rem;
 
         background-color: var(--back-col-dark);

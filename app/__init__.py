@@ -123,6 +123,7 @@ def user_logout():
 # Compose message page
 #-----------------------------------------------------------
 @app.get("/message/new")
+@login_required
 def message_create():
     return render_template("pages/message_form.jinja")
 
@@ -131,11 +132,12 @@ def message_create():
 # Handle new message
 #-----------------------------------------------------------
 @app.post("/message")
+@login_required
 def process_new_message():
     title = request.form.get('title', '').strip()
     text = request.form.get('text', '').strip()
 
-    # User bID is in the session
+    # User ID is in the session
     user_id = session["user"]["id"]
 
     with connect_db() as db:
@@ -147,29 +149,20 @@ def process_new_message():
 
         db.execute(sql,params)
 
-
 #-----------------------------------------------------------
-# View message page
+# Message list page - Show all the messages
 #-----------------------------------------------------------
-@app.get("/message/show")
-def browse():
-    return render_template("pages/browse.jinja")
-
-
-#-----------------------------------------------------------
-# Creature list page - Show all the creatures
-#-----------------------------------------------------------
-@app.get("/creatures")
-def show_all_creatures():
+@app.get("/messages")
+def show_all_messages():
     with connect_db() as db:
         sql = """
-            SELECT id, species, name
-            FROM creatures
+            SELECT id, user_id, title, text
+            FROM messages
         """
         params = ()
-        creatures = db.execute(sql, params).fetchall()
+        messages = db.execute(sql, params).fetchall()
 
-        return render_template("pages/creature_list.jinja", creatures=creatures)
+        return render_template("pages/browse.jinja", messages=messages)
 
 
 #-----------------------------------------------------------
