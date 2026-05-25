@@ -32,7 +32,7 @@
         <h1>Creatures</h1>
 
         <nav>
-            {% if session.loggedIn %}
+            {% if session.logged_in %}
                 Welcome, {{ session.user.firstname }}!
                 <a href="/">Home</a>
                 <a href="/message/new">Post</a>
@@ -41,6 +41,7 @@
                 <a href="/logout">Logout</a>
             {% else %}
                 <a href="/">Home</a>
+                <a href="/message/view">Browse</a>
                 <a href="/user/login">Login</a>
                 <a href="/user/new">Sign-Up</a>
             {% endif %}

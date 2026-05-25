@@ -97,7 +97,7 @@ def process_user_login():
             flash(f"Incorrect password", "Error")
             return redirect("/user/login")
 
-        session["loggedIn"] = True
+        session["logged_in"] = True
         session["user"] = {
             "id": user["id"],
             "username": username,
@@ -150,9 +150,9 @@ def process_new_message():
         db.execute(sql,params)
 
 #-----------------------------------------------------------
-# Message list page - Show all the messages
+# Message list page
 #-----------------------------------------------------------
-@app.get("/messages")
+@app.get("/message/view")
 def show_all_messages():
     with connect_db() as db:
         sql = """
@@ -163,6 +163,64 @@ def show_all_messages():
         messages = db.execute(sql, params).fetchall()
 
         return render_template("pages/browse.jinja", messages=messages)
+
+
+#-----------------------------------------------------------
+# Edit message page
+#-----------------------------------------------------------
+@app.get("/message/edit/<int:id>")
+def show_edit_form(id):
+    with connect_db() as db:
+        sql = """
+            SELECT id, user_id, title, text
+            FROM messages
+            Where id=?
+        """
+        params = (id,)
+        message = db.execute(sql, params).fetchone()
+
+        return render_template("pages/browse.jinja", message=message)
+
+
+#-----------------------------------------------------------
+# Handle edit message
+#-----------------------------------------------------------
+@app.get("/message/<int:id>")
+def edit_message(id):
+    title = request.form.get('title', '').strip()
+    text = request.form.get('text', '').strip()
+
+    title = html.escape(title)
+    body = html.escape(body)
+
+    with connect_db() as db:
+        sql = """
+            UPDATE messages
+            SET title=?, text=?
+            WHERE id=?
+        """
+        params = (title, body, id)
+        db.execute(sql, params)
+
+        flash("Post updated", "success")
+        return redirect("/message/view")
+
+
+#-----------------------------------------------------------
+# Handle delete message
+#-----------------------------------------------------------
+@app.get("/message/delete/<int:id>")
+def delete_message(id):
+    with connect_db() as db:
+        sql = """
+            DELETE FROM messages
+            WHERE id=?
+        """
+        params = (id,)
+        db.execute(sql, params)
+
+        flash("Post deleted", "success")
+        return redirect("/message/view")
 
 
 #-----------------------------------------------------------

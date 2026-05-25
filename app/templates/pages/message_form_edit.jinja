@@ -1,0 +1,26 @@
+{#=====================================================
+  Message creation page
+=====================================================#}
+
+{% extends 'pages/base.jinja' %}
+
+
+{% block content %}
+
+    <h2>Create Post</h2>
+
+    <form method="post" action="/message/{{ message.id }}">
+      <h3>Edit</h3>
+      <label>
+        Title
+        <input type="text" name="title" value="{{message.title}}">
+      </label>
+      <label>
+        Post
+        <input type="text" name="text" value="{{message.text}}">
+      </label>
+      <button>Confirm</button>
+    </form>
+
+{% endblock %}
+

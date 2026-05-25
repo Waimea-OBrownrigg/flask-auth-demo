@@ -14,6 +14,10 @@
             <div class="message-item">
                 <h3>{{ message.title }}</h3>
                 <p>{{ message.text }}</p>
+                {% if session.logged_in and session.user.id == message.user_id %}
+                <a href="/message/edit/{{ message.id }}">Edit</a>
+                <a href="/message/delete/{{ message.id }}">Delete</a>
+                {% endif %}
             </div>
 
         {% else %}
