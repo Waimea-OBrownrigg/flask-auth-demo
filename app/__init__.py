@@ -148,6 +148,7 @@ def process_new_message():
         params = (user_id, title, text)
 
         db.execute(sql,params)
+        return redirect("/message/view")
 
 #-----------------------------------------------------------
 # Message list page
@@ -169,6 +170,7 @@ def show_all_messages():
 # Edit message page
 #-----------------------------------------------------------
 @app.get("/message/edit/<int:id>")
+@login_required
 def show_edit_form(id):
     with connect_db() as db:
         sql = """
@@ -179,19 +181,20 @@ def show_edit_form(id):
         params = (id,)
         message = db.execute(sql, params).fetchone()
 
-        return render_template("pages/browse.jinja", message=message)
+        return render_template("pages/message_form_edit.jinja", message=message)
 
 
 #-----------------------------------------------------------
 # Handle edit message
 #-----------------------------------------------------------
-@app.get("/message/<int:id>")
+@app.post("/message/<int:id>")
+@login_required
 def edit_message(id):
     title = request.form.get('title', '').strip()
     text = request.form.get('text', '').strip()
 
     title = html.escape(title)
-    body = html.escape(body)
+    text = html.escape(text)
 
     with connect_db() as db:
         sql = """
@@ -199,7 +202,7 @@ def edit_message(id):
             SET title=?, text=?
             WHERE id=?
         """
-        params = (title, body, id)
+        params = (title, text, id)
         db.execute(sql, params)
 
         flash("Post updated", "success")
@@ -210,17 +213,32 @@ def edit_message(id):
 # Handle delete message
 #-----------------------------------------------------------
 @app.get("/message/delete/<int:id>")
+@login_required
 def delete_message(id):
     with connect_db() as db:
         sql = """
-            DELETE FROM messages
-            WHERE id=?
+            SELECT user_id
+            FROM messages
+            Where id=?
         """
         params = (id,)
-        db.execute(sql, params)
+        correct_user = db.execute(sql, params).fetchone()
 
-        flash("Post deleted", "success")
-        return redirect("/message/view")
+        if correct_user["user_id"] == session["user"]["id"]:
+            with connect_db() as db:
+                sql = """
+                    DELETE FROM messages
+                    WHERE id=?
+                """
+                params = (id,)
+                db.execute(sql, params)
+
+                flash("Post deleted", "success")
+                return redirect("/message/view")
+        else:
+            flash("Incorrect user.", "error")
+            return redirect("/message/view")
+        
 
 
 #-----------------------------------------------------------
