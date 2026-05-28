@@ -90,11 +90,11 @@ def process_user_login():
         user = db.execute(sql, params).fetchone()
 
         if not user:
-            flash(f"Unknown user.", "Error")
+            flash(f"Unknown user.", "error")
             return redirect("/user/login")
 
         if not check_password_hash(user["password_hash"], password):
-            flash(f"Incorrect password", "Error")
+            flash(f"Incorrect password", "error")
             return redirect("/user/login")
 
         session["logged_in"] = True

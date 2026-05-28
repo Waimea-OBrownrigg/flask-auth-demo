@@ -4,24 +4,27 @@
 ===========================================================*/
 
 :root {
-    --base-col:         #355;
-    --accent-col:       #e43;
+    --base-col:         #ffe9ba;
+    --accent-col:       #990d00;
+    --accent-col-2:       #ba935a;
 
     --base-col-lighter: color-mix(in srgb, var(--base-col), #fff 50%);
     --base-col-light:   color-mix(in srgb, var(--base-col), #fff 20%);
     --base-col-dark:    color-mix(in srgb, var(--base-col), #000 20%);
     --base-col-darker:  color-mix(in srgb, var(--base-col), #000 50%);
 
-    --text-col:         #000;
-    --text-col-inv:     #fff;
+    --text-col:         var(--accent-col);
+    --text-col-inv:     var(--accent-col-2);
 
     --page-bg:          var(--base-col-lighter);
+
+    --page-header-bg:          var(--accent-col);
 
     --panel-bg:         var(--base-col-light);
 
     --border-col:       var(--base-col-darker);
 
-    --link-col:         var(--accent-col);
+    --link-col:         var(--accent-col-2);
     --button-bg:        var(--accent-col);
     
 
@@ -58,9 +61,11 @@ main {
 
 body > header {
     display: flex;
-    gap: 1rem;
+    gap: var(--gap);
     align-items: center;
-    padding: 1rem;
+    padding: var(--padding);
+    background-color: var(--page-header-bg);
+    color: var(--text-col-inv);
 
     .logo {
         width: 2rem;
